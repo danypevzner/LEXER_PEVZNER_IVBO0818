@@ -1,0 +1,133 @@
+unit Unit9;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls;
+
+type
+  TForm9 = class(TForm)
+    Edit1: TEdit;
+    Button1: TButton;
+    Edit2: TEdit;
+    procedure Button1Click(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  Form9: TForm9;
+
+implementation
+
+{$R *.dfm}
+function checkop(str:string):boolean;
+begin
+  result:=false;
+  if (str = '+-') then begin
+    result:=true;
+  end;
+  if (str = '+') then begin
+    result:=true;
+  end;
+  if (str = ' ') then begin
+    result:=true;
+  end;
+  if (str = '=') then begin
+    result:=true;
+  end;
+end;
+
+function checknum(str:string):boolean;
+var
+i:integer;
+let:char;
+begin
+result:=true;
+    for  i:=1 to (str.Length) do begin
+    let:=str[i];
+     result:=true;
+      if (Ord(let)>47) and (Ord(let)<58)  then begin
+
+      end
+      else begin
+        result:=false;
+      end;
+    end;
+
+end;
+
+function checkvar(str:string):boolean;
+begin
+  result:=false;
+  if (str = 'var') then begin
+    result:=true;
+  end;
+end;
+
+function checkname(str:string):boolean;
+var
+s2:string;
+begin
+  result:=false;
+  s2:= ' ';
+  if (pos(s2,str)=0) then begin
+    result:=true;
+  end;
+end;
+
+function checkstr(str:string):integer;
+begin
+  result:=0;
+  if (checkname(str)) then begin
+    result:=3;
+  end;
+  if (checkop(str)) then begin
+    result:=1;
+  end;
+   if (checknum(str)) then begin
+    result:=4;
+  end;
+  if (checkvar(str)) then begin
+    result:=2;
+  end;
+end;
+
+
+procedure TForm9.Button1Click(Sender: TObject);
+var
+imp:string;
+buf,outbuf:string;
+i:integer;
+begin
+  imp:=Edit1.Text;
+  i:=0;
+  //o:=0;
+  buf:='';
+  While (i<=imp.Length) do begin
+    i:=i+1;
+    if  (checkstr(buf)>0) then begin
+      outbuf:=outbuf+imp[i-1];
+       outbuf:=Inttostr(checkstr(buf));
+      case checkstr(buf) of
+       3: outbuf:=outbuf+' name ';
+       1: outbuf:=outbuf+' op ';
+       4: outbuf:=outbuf+' num ';
+       2: outbuf:=outbuf+' var ';
+
+      end;
+    end
+    else begin
+      Edit2.Text:=Edit2.Text+ outbuf;
+      buf:='';
+      outbuf:='';
+    end;
+     buf:=buf+imp[i];
+  end;
+  Edit2.Text:=Edit2.Text+ outbuf;
+end;
+
+end.
